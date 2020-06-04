@@ -1,60 +1,68 @@
 'use strict';
 
+var TITLES = ['Большая уютная квартира', 'Маленькая неуютная квартира', 'Огромный прекрасный дворец', 'Маленький ужасный дворец', 'Красивый гостевой домик', 'Некрасивый негостеприимный домик', 'Уютное бунгало далеко от моря', 'Неуютное бунгало по колено в воде'];
+var TYPES = ['palace', 'flat', 'house', 'bungalo'];
+var TIMES = ['12:00', '13:00', '14:00'];
+var FEATURES = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
+var DESCRIPTIONS = ['Внезапно, преступность никогда не была такой неорганизованной', 'Консультация с широким активом одухотворила всех причастных', 'Воистину радостный звук: полуночный пёсий вой', 'Никте не вправе осуждать звон колоколов', 'Есть над чем задуматься: зима близко', 'Давайте не будем укрепляться в мысли, что кровь стынет в жилах!', 'Подтверждено: героям были возданы соответствующие почести', 'Нашу победу сопровождал детский заливистый смех'];
+var PHOTOS = ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg'];
+
 var pinTemplate = document.querySelector('#pin');
 var map = document.querySelector('.map');
 var mapPinsWrapper = document.querySelector('.map__pins');
-var cards = [];
 
-var arrayRandElement = function (array) {
-  var rand = Math.floor(Math.random() * array.length);
-  return array[rand];
+var getRandomItemFromArray = function (array) {
+  var randomArrayItemIndex = Math.floor(Math.random() * array.length);
+
+  return array[randomArrayItemIndex];
 };
 
-var randNumber = function (min, max) {
+var getRandomNumber = function (min, max) {
   return Math.floor(Math.random() * (max - min + 1) + min);
 };
 
-var randShuffle = function (array) {
-  return array.sort(function () {
-    return Math.random() - 0.5;
-  }).slice(0, randNumber(1, array.length));
+var sliceArrayWithRandomLength = function (array) {
+  return array.slice(0, getRandomNumber(1, array.length));
 };
 
-var createCardArray = function () {
-  for (var i = 1; i <= 8; i++) {
+var shuffleArray = function (array) {
+  return array.sort(function () {
+    return Math.random() - 0.5;
+  });
+};
+
+var createCardsArray = function (arrayLength) {
+  var cards = [];
+
+  for (var i = 1; i <= arrayLength; i++) {
     cards.push(createCard(i));
   }
+
+  return cards;
 };
 
 var createCard = function (index) {
-  var TITLES = ['Большая уютная квартира', 'Маленькая неуютная квартира', 'Огромный прекрасный дворец', 'Маленький ужасный дворец', 'Красивый гостевой домик', 'Некрасивый негостеприимный домик', 'Уютное бунгало далеко от моря', 'Неуютное бунгало по колено в воде'];
-  var TYPES = ['palace', 'flat', 'house', 'bungalo'];
-  var TIMES = ['12:00', '13:00', '14:00'];
-  var FEATURES = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
-  var DESCRIPTIONS = ['Внезапно, преступность никогда не была такой неорганизованной', 'Консультация с широким активом одухотворила всех причастных', 'Воистину радостный звук: полуночный пёсий вой', 'Никте не вправе осуждать звон колоколов', 'Есть над чем задуматься: зима близко', 'Давайте не будем укрепляться в мысли, что кровь стынет в жилах!', 'Подтверждено: героям были возданы соответствующие почести', 'Нашу победу сопровождал детский заливистый смех'];
-  var PHOTOS = ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg'];
-
   return {
     'author': {
       'avatar': 'img/avatars/user0' + index + '.png',
     },
     'offer': {
-      'title': arrayRandElement(TITLES),
+      'title': getRandomItemFromArray(TITLES),
       'address': function () {
         return this.location.x + ', ' + this.location.y;
       },
-      'price': randNumber(1, 50000),
-      'type': arrayRandElement(TYPES),
-      'rooms': randNumber(1, 3),
-      'guests': randNumber(0, 2),
-      'checkin': arrayRandElement(TIMES),
-      'checkout': arrayRandElement(TIMES),
-      'features': randShuffle(FEATURES),
-      'description': arrayRandElement(DESCRIPTIONS),
-      'photos': randShuffle(PHOTOS),
+      'price': getRandomNumber(1, 50000),
+      'type': getRandomItemFromArray(TYPES),
+      'rooms': getRandomNumber(1, 3),
+      'guests': getRandomNumber(0, 2),
+      'checkin': getRandomItemFromArray(TIMES),
+      'checkout': getRandomItemFromArray(TIMES),
+      'features': sliceArrayWithRandomLength(shuffleArray(FEATURES)),
+      'description': getRandomItemFromArray(DESCRIPTIONS),
+      'photos': sliceArrayWithRandomLength(shuffleArray(PHOTOS)),
       'location': {
-        'x': randNumber(0, map.offsetWidth),
-        'y': randNumber(130, 630),
+        'x': getRandomNumber(0, map.offsetWidth),
+        'y': getRandomNumber(130, 630),
       },
     },
   };
@@ -62,6 +70,7 @@ var createCard = function (index) {
 
 var setPinsToMap = function () {
   var fragment = document.createDocumentFragment();
+  var cards = createCardsArray(8);
 
   for (var i = 0; i < cards.length; i++) {
     var pin = pinTemplate.content.querySelector('.map__pin');
@@ -80,5 +89,4 @@ var setPinsToMap = function () {
   mapPinsWrapper.appendChild(fragment);
 };
 
-createCardArray();
 setPinsToMap();
