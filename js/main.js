@@ -73,20 +73,24 @@ var setPinsToMap = function () {
   var cards = createCardsArray(8);
 
   for (var i = 0; i < cards.length; i++) {
-    var pin = pinTemplate.content.querySelector('.map__pin');
-
-    pin.style.left = cards[i].offer.location.x - pin.offsetWidth / 2 + 'px';
-    pin.style.top = cards[i].offer.location.y - pin.offsetHeight + 'px';
-
-    var pinImg = pin.querySelector('img');
-
-    pinImg.src = cards[i].author.avatar;
-    pinImg.alt = cards[i].offer.title;
-
-    fragment.appendChild(pin.cloneNode(true));
+    fragment.appendChild(creatPin(cards[i]));
   }
 
   mapPinsWrapper.appendChild(fragment);
+};
+
+var creatPin = function (pinInfo) {
+  var pin = pinTemplate.content.querySelector('.map__pin').cloneNode(true);
+
+  pin.style.left = pinInfo.offer.location.x - pin.offsetWidth / 2 + 'px';
+  pin.style.top = pinInfo.offer.location.y - pin.offsetHeight + 'px';
+
+  var pinImg = pin.querySelector('img');
+
+  pinImg.src = pinInfo.author.avatar;
+  pinImg.alt = pinInfo.offer.title;
+
+  return pin;
 };
 
 setPinsToMap();
