@@ -6,6 +6,12 @@ var TIMES = ['12:00', '13:00', '14:00'];
 var FEATURES = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
 var DESCRIPTIONS = ['Внезапно, преступность никогда не была такой неорганизованной', 'Консультация с широким активом одухотворила всех причастных', 'Воистину радостный звук: полуночный пёсий вой', 'Никте не вправе осуждать звон колоколов', 'Есть над чем задуматься: зима близко', 'Давайте не будем укрепляться в мысли, что кровь стынет в жилах!', 'Подтверждено: героям были возданы соответствующие почести', 'Нашу победу сопровождал детский заливистый смех'];
 var PHOTOS = ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg'];
+var PROPERTY_TYPES = {
+  flat: 'Квартира',
+  bungalo: 'Бунгало',
+  house: 'Дом',
+  palace: 'Дворец',
+};
 
 var pinTemplate = document.querySelector('#pin');
 var map = document.querySelector('.map');
@@ -33,14 +39,14 @@ var shuffleArray = function (array) {
   });
 };
 
-var createCardsArray = function (arrayLength) {
-  var cards = [];
+var createCardsArray = function createCardsArray(arrayLength) {
+  var _cards = [];
 
   for (var i = 1; i <= arrayLength; i++) {
-    cards.push(createCard(i));
+    _cards.push(createCard(i));
   }
 
-  return cards;
+  return _cards;
 };
 
 var createCard = function (index) {
@@ -72,14 +78,12 @@ var createCard = function (index) {
 
 var setPinsToMap = function () {
   var fragment = document.createDocumentFragment();
-  var cards = createCardsArray(8);
 
   for (var i = 0; i < cards.length; i++) {
     fragment.appendChild(creatPin(cards[i]));
   }
 
   mapPinsWrapper.appendChild(fragment);
-  map.insertBefore(createCardDescription(cards[0]), mapFiltersContainer);
 };
 
 var creatPin = function (pinInfo) {
@@ -98,17 +102,11 @@ var creatPin = function (pinInfo) {
 
 var createCardDescription = function (card) {
   var mapCard = cardTemplate.content.querySelector('.map__card').cloneNode(true);
-  var propertyType = {
-    flat: 'Квартира',
-    bungalo: 'Бунгало',
-    house: 'Дом',
-    palace: 'Дворец',
-  };
 
   mapCard.querySelector('.popup__title').textContent = card.offer.title;
   mapCard.querySelector('.popup__text--address').textContent = card.offer.address();
   mapCard.querySelector('.popup__text--price').innerHTML = card.offer.price + '₽<span>/ночь</span>';
-  mapCard.querySelector('.popup__type').textContent = propertyType[card.offer.type];
+  mapCard.querySelector('.popup__type').textContent = PROPERTY_TYPES[card.offer.type];
   mapCard.querySelector('.popup__text--capacity').textContent = card.offer.rooms + ' комнаты для ' + card.offer.guests + ' гостей';
   mapCard.querySelector('.popup__text--time').textContent = 'Заезд после ' + card.offer.checkin + ', выезд до ' + card.offer.checkout;
   mapCard.querySelector('.popup__features').innerHTML = '';
@@ -125,7 +123,7 @@ var createPopUpFeatures = function (features) {
   var fragmet = document.createDocumentFragment();
 
   for (var i = 0; i < features.length; i++) {
-    var feature = document.createElement('div');
+    var feature = document.createElement('li');
 
     feature.classList.add('popup__feature', 'popup__feature--' + features[i]);
     fragmet.appendChild(feature);
@@ -136,27 +134,28 @@ var createPopUpFeatures = function (features) {
 
 var createPopUpPhotos = function (photos) {
   var fragmet = document.createDocumentFragment();
-  var attributes = {
-    class: 'popup__photo',
-    width: '45',
-    height: '40',
-    alt: 'Фотография жилья',
-  };
 
   for (var i = 0; i < photos.length; i++) {
-    var photo = document.createElement('img');
-    photo.src = photos[i];
+    var imageTemplate = cardTemplate.content.querySelector('.popup__photo').cloneNode();
 
-    for (var key in attributes) {
-      if (attributes.hasOwnProperty(key)) {
-        photo.setAttribute(key, attributes[key]);
-      }
-    }
-
-    fragmet.appendChild(photo);
+    imageTemplate.src = photos[i];
+    fragmet.appendChild(imageTemplate);
   }
 
   return fragmet;
 };
 
+var openMapCardPopUp = function (cardInfo) {
+  var card = map.querySelector('.map__card');
+
+  if (card) {
+    card.remove();
+  }
+
+  map.insertBefore(createCardDescription(cardInfo), mapFiltersContainer);
+};
+
+var cards = createCardsArray(8);
+
 setPinsToMap();
+openMapCardPopUp(cards[0]);
