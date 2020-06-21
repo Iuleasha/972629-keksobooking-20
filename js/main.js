@@ -6,18 +6,19 @@ var TIMES = ['12:00', '13:00', '14:00'];
 var FEATURES = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
 var DESCRIPTIONS = ['Внезапно, преступность никогда не была такой неорганизованной', 'Консультация с широким активом одухотворила всех причастных', 'Воистину радостный звук: полуночный пёсий вой', 'Никте не вправе осуждать звон колоколов', 'Есть над чем задуматься: зима близко', 'Давайте не будем укрепляться в мысли, что кровь стынет в жилах!', 'Подтверждено: героям были возданы соответствующие почести', 'Нашу победу сопровождал детский заливистый смех'];
 var PHOTOS = ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg'];
-var PROPERTY_TYPES = {
+/* var PROPERTY_TYPES = {
   flat: 'Квартира',
   bungalo: 'Бунгало',
   house: 'Дом',
   palace: 'Дворец',
-};
+};*/
+var PIN_ARROW_HEIGHT = 22;
 
 var pinTemplate = document.querySelector('#pin');
 var map = document.querySelector('.map');
 var mapPinsWrapper = document.querySelector('.map__pins');
-var cardTemplate = document.querySelector('#card');
-var mapFiltersContainer = document.querySelector('.map__filters-container');
+// var cardTemplate = document.querySelector('#card');
+// var mapFiltersContainer = document.querySelector('.map__filters-container');
 
 var getRandomItemFromArray = function (array) {
   var randomArrayItemIndex = Math.floor(Math.random() * array.length);
@@ -100,6 +101,7 @@ var creatPin = function (pinInfo) {
   return pin;
 };
 
+/*
 var createCardDescription = function (card) {
   var mapCard = cardTemplate.content.querySelector('.map__card').cloneNode(true);
 
@@ -118,8 +120,9 @@ var createCardDescription = function (card) {
 
   return mapCard;
 };
+*/
 
-var createPopUpFeatures = function (features) {
+/* var createPopUpFeatures = function (features) {
   var fragmet = document.createDocumentFragment();
 
   for (var i = 0; i < features.length; i++) {
@@ -130,9 +133,9 @@ var createPopUpFeatures = function (features) {
   }
 
   return fragmet;
-};
+};*/
 
-var createPopUpPhotos = function (photos) {
+/* var createPopUpPhotos = function (photos) {
   var fragmet = document.createDocumentFragment();
 
   for (var i = 0; i < photos.length; i++) {
@@ -143,9 +146,9 @@ var createPopUpPhotos = function (photos) {
   }
 
   return fragmet;
-};
+};*/
 
-var openMapCardPopUp = function (cardInfo) {
+/* var openMapCardPopUp = function (cardInfo) {
   var card = map.querySelector('.map__card');
 
   if (card) {
@@ -153,9 +156,112 @@ var openMapCardPopUp = function (cardInfo) {
   }
 
   map.insertBefore(createCardDescription(cardInfo), mapFiltersContainer);
+}; */
+
+var disableFilter = function (status) {
+  var filterWrapper = document.querySelector('.map__filters');
+  var selectFilter = filterWrapper.querySelectorAll('select');
+
+  if (status) {
+    filterWrapper.querySelector('fieldset').setAttribute('disabled', status);
+  } else {
+    filterWrapper.removeAttribute('disabled');
+  }
+
+  switchDisableStatus(selectFilter, status);
 };
 
-var cards = createCardsArray(8);
+var disableForm = function (status) {
+  var adFormForm = document.querySelector('.ad-form');
+  var adFormFieldsets = adFormForm.querySelectorAll('fieldset');
 
-setPinsToMap();
-openMapCardPopUp(cards[0]);
+  if (status) {
+    adFormForm.classList.add('ad-form--disabled');
+  } else {
+    adFormForm.classList.remove('ad-form--disabled');
+  }
+
+  switchDisableStatus(adFormFieldsets, status);
+};
+
+var switchDisableStatus = function (array, status) {
+  for (var i = 0; i < array.length; i++) {
+    if (status) {
+      array[i].setAttribute('disabled', status);
+    } else {
+      array[i].removeAttribute('disabled');
+    }
+  }
+};
+
+var setAddress = function (value) {
+  var address = document.querySelector('#address');
+
+  address.value = value;
+};
+
+var mainPinCoordinates = function () {
+  var mainPin = document.querySelector('.map__pin--main');
+  var mainPinWidth = mainPin.offsetWidth;
+  var mainPinHeight = mainPin.offsetHeight;
+  var mainPinTop = mainPin.offsetTop;
+  var mainPinLeft = mainPin.offsetLeft;
+
+  if (!isActive) {
+    setAddress(Math.round(mainPinLeft + mainPinWidth / 2) + ', ' + Math.round(mainPinTop + mainPinHeight / 2));
+  } else {
+    setAddress(Math.round(mainPinLeft + mainPinWidth / 2) + ', ' + Math.round(mainPinTop + mainPinHeight + PIN_ARROW_HEIGHT));
+  }
+};
+
+
+var activateMap = function (event) {
+  if ((event.button === 0 || event.key === 'Enter') && !isActive) {
+    isActive = true;
+
+    map.classList.remove('map--faded');
+    setPinsToMap();
+    disableFilter(false);
+    disableForm(false);
+
+    mainPinCoordinates();
+  }
+};
+
+disableFilter(true);
+disableForm(true);
+mainPinCoordinates();
+
+var isActive = false;
+var cards = createCardsArray(8);
+var mapPinMain = document.querySelector('.map__pin--main');
+
+mapPinMain.addEventListener('mousedown', activateMap);
+mapPinMain.addEventListener('keydown', activateMap);
+
+
+/* Валидация */
+var roomNumberSelect = document.querySelector('#room_number');
+var capacitySelect = document.querySelector('#capacity');
+
+var roomCapacityValidation = function () {
+  var capacityNumber = Number(capacitySelect.value);
+
+  if (roomNumberSelect.value === '1' && (capacityNumber === 0 || capacityNumber > 1)) {
+    capacitySelect.setCustomValidity('для 1 гостя');
+  } else if (roomNumberSelect.value === '2' && (capacityNumber === 0 || capacityNumber > 2)) {
+    capacitySelect.setCustomValidity('«для 2 гостей» или «для 1 гостя»');
+  } else if (roomNumberSelect.value === '3' && (capacityNumber === 0 || capacityNumber > 3)) {
+    capacitySelect.setCustomValidity('«для 3 гостей», «для 2 гостей» или «для 1 гостя»');
+  } else if (roomNumberSelect.value === '100' && capacityNumber > 0) {
+    capacitySelect.setCustomValidity('«не для гостей»');
+  } else {
+    capacitySelect.setCustomValidity('');
+  }
+};
+
+roomCapacityValidation();
+
+capacitySelect.addEventListener('input', roomCapacityValidation);
+capacitySelect.addEventListener('invalid', roomCapacityValidation);
+roomNumberSelect.addEventListener('input', roomCapacityValidation);
