@@ -200,7 +200,7 @@ var setAddress = function (value) {
   address.value = value;
 };
 
-var mainPinCoordinates = function () {
+var setMainPinCoordinates = function () {
   var mainPin = document.querySelector('.map__pin--main');
   var mainPinWidth = mainPin.offsetWidth;
   var mainPinHeight = mainPin.offsetHeight;
@@ -215,36 +215,45 @@ var mainPinCoordinates = function () {
 };
 
 
-var activateMap = function (event) {
-  if ((event.button === 0 || event.key === 'Enter') && !isActive) {
-    isActive = true;
-
-    map.classList.remove('map--faded');
-    setPinsToMap();
-    disableFilter(false);
-    disableForm(false);
-
-    mainPinCoordinates();
+var activateMap = function () {
+  if (isActive) {
+    return;
   }
+
+  isActive = true;
+
+  map.classList.remove('map--faded');
+  setPinsToMap();
+  disableFilter(false);
+  disableForm(false);
+  setMainPinCoordinates();
 };
 
 disableFilter(true);
 disableForm(true);
-mainPinCoordinates();
+setMainPinCoordinates();
 
 var isActive = false;
 var cards = createCardsArray(8);
 var mapPinMain = document.querySelector('.map__pin--main');
 
-mapPinMain.addEventListener('mousedown', activateMap);
-mapPinMain.addEventListener('keydown', activateMap);
-
+mapPinMain.addEventListener('mousedown', function (evt) {
+  if (evt.button === 0) {
+    activateMap();
+  }
+});
+mapPinMain.addEventListener('keydown', function (evt) {
+  if (evt.key === 'Enter') {
+    evt.preventDefault();
+    activateMap();
+  }
+});
 
 /* Валидация */
 var roomNumberSelect = document.querySelector('#room_number');
 var capacitySelect = document.querySelector('#capacity');
 
-var roomCapacityValidation = function () {
+var addRoomCapacityValidation = function () {
   var capacityNumber = Number(capacitySelect.value);
 
   if (roomNumberSelect.value === '1' && (capacityNumber === 0 || capacityNumber > 1)) {
@@ -260,8 +269,8 @@ var roomCapacityValidation = function () {
   }
 };
 
-roomCapacityValidation();
+addRoomCapacityValidation();
 
-capacitySelect.addEventListener('input', roomCapacityValidation);
-capacitySelect.addEventListener('invalid', roomCapacityValidation);
-roomNumberSelect.addEventListener('input', roomCapacityValidation);
+capacitySelect.addEventListener('input', addRoomCapacityValidation);
+capacitySelect.addEventListener('invalid', addRoomCapacityValidation);
+roomNumberSelect.addEventListener('input', addRoomCapacityValidation);
