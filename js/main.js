@@ -98,6 +98,10 @@ var creatPin = function (pinInfo) {
   pinImg.src = pinInfo.author.avatar;
   pinImg.alt = pinInfo.offer.title;
 
+  pin.addEventListener('click', function () {
+    openCardPopUp(pinInfo);
+  });
+
   return pin;
 };
 
@@ -148,16 +152,33 @@ var createPopUpPhotos = function (photos) {
   return fragmet;
 };
 
-var openCloseMapCardPopUp = function (cardInfo) {
+var openCardPopUp = function (cardInfo) {
+  closeCardPopUp();
+
+  var newCard = createCardDescription(cardInfo);
+
+  newCard.querySelector('.popup__close').addEventListener('click', function () {
+    closeCardPopUp();
+  });
+
+  map.insertBefore(newCard, mapFiltersContainer);
+
+  document.addEventListener('keydown', onEscPress);
+};
+
+var onEscPress = function (evt) {
+  if (evt.key === 'Escape') {
+    closeCardPopUp();
+  }
+};
+
+var closeCardPopUp = function () {
   var card = map.querySelector('.map__card');
 
   if (card) {
     card.remove();
-  }
 
-  if (cardInfo) {
-    map.insertBefore(createCardDescription(cardInfo), mapFiltersContainer);
-    closePopupByCloseBtn();
+    document.removeEventListener('keydown', onEscPress);
   }
 };
 
@@ -230,8 +251,6 @@ var activateMap = function () {
   disableFilter(false);
   disableForm(false);
   setMainPinCoordinates();
-  addEventToPins();
-  closePopupByEscBtn();
 };
 
 disableFilter(true);
@@ -254,37 +273,6 @@ mapPinMain.addEventListener('keydown', function (evt) {
     activateMap();
   }
 });
-
-var closePopupByEscBtn = function () {
-  document.addEventListener('keydown', function (evt) {
-    if (evt.key === 'Escape') {
-      openCloseMapCardPopUp();
-    }
-  });
-};
-
-var closePopupByCloseBtn = function () {
-  var closeBtn = map.querySelector('.popup__close');
-  closeBtn.addEventListener('click', function () {
-    openCloseMapCardPopUp();
-  });
-};
-
-/* Карточки */
-
-var setEventPin = function (element, data) {
-  element.addEventListener('click', function () {
-    openCloseMapCardPopUp(data);
-  });
-};
-
-var addEventToPins = function () {
-  var pins = mapPinsWrapper.querySelectorAll('.map__pin');
-
-  for (var i = 1; i < pins.length; i++) {
-    setEventPin(pins[i], cards[i - 1]);
-  }
-};
 
 /* Валидация */
 var roomNumberSelect = document.querySelector('#room_number');
@@ -309,8 +297,8 @@ var addRoomCapacityValidation = function () {
     capacitySelect.setCustomValidity('');
   }
 };
-addRoomCapacityValidation();
 
+addRoomCapacityValidation();
 
 capacitySelect.addEventListener('input', addRoomCapacityValidation);
 capacitySelect.addEventListener('invalid', addRoomCapacityValidation);
@@ -321,19 +309,22 @@ var switchMinPrice = function () {
   var typeSelectValue = typeSelect.value;
   if (typeSelectValue === 'bungalo') {
     priceInput.setAttribute('min', '0');
+    priceInput.setAttribute('placeholder', '0');
   } else if (typeSelectValue === 'flat') {
     priceInput.setAttribute('min', '1000');
+    priceInput.setAttribute('placeholder', '1000');
   } else if (typeSelectValue === 'house') {
     priceInput.setAttribute('min', '5000');
+    priceInput.setAttribute('placeholder', '5000');
   } else if (typeSelectValue === 'palace') {
     priceInput.setAttribute('min', '10000');
+    priceInput.setAttribute('placeholder', '10000');
   }
 };
 
 switchMinPrice();
 
 typeSelect.addEventListener('input', switchMinPrice);
-
 
 timeInSelect.addEventListener('input', function (evt) {
   timeOutSelect.value = evt.target.value;
