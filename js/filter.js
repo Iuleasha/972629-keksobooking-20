@@ -1,7 +1,7 @@
 'use strict';
 
 (function () {
-  window.disableFilter = function (status) {
+  var disableFilter = function (status) {
     var filterWrapper = document.querySelector('.map__filters');
     var selectFilter = filterWrapper.querySelectorAll('select');
 
@@ -11,6 +11,10 @@
       filterWrapper.removeAttribute('disabled');
     }
 
-    window.form.switchDisableStatus(selectFilter, status);
+    window.utils.switchDisableStatus(selectFilter, status);
+  };
+
+  window.filter = {
+    disableFilter: disableFilter,
   };
 })();

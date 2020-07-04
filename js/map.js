@@ -1,16 +1,19 @@
 'use strict';
 
 (function () {
-  window.activateMap = function () {
-    if (window.variables.isActive) {
+  var activateMap = function () {
+    if (window.map.isActive) {
       return;
     }
 
-    window.variables.isActive = true;
-    window.variables.map.classList.remove('map--faded');
-    window.setPinsToMap();
-    window.disableFilter(false);
-    window.form.disableForm(false);
-    window.setMainPinCoordinates();
+    window.map.isActive = true;
+    window.card.map.classList.remove('map--faded');
+    window.pin.setPinsToMap();
+    window.main.activatePage();
+  };
+
+  window.map = {
+    isActive: false,
+    activateMap: activateMap,
   };
 })();

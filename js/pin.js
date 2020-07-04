@@ -2,7 +2,8 @@
 
 (function () {
   var creatPin = function (pinInfo) {
-    var pin = window.variables.pinTemplate.content.querySelector('.map__pin').cloneNode(true);
+    var pinTemplate = document.querySelector('#pin');
+    var pin = pinTemplate.content.querySelector('.map__pin').cloneNode(true);
 
     pin.style.left = pinInfo.offer.location.x - pin.offsetWidth / 2 + 'px';
     pin.style.top = pinInfo.offer.location.y - pin.offsetHeight + 'px';
@@ -13,19 +14,24 @@
     pinImg.alt = pinInfo.offer.title;
 
     pin.addEventListener('click', function () {
-      window.openCardPopUp(pinInfo);
+      window.card.openCardPopUp(pinInfo);
     });
 
     return pin;
   };
 
-  window.setPinsToMap = function () {
+  var setPinsToMap = function () {
+    var mapPinsWrapper = document.querySelector('.map__pins');
     var fragment = document.createDocumentFragment();
 
-    for (var i = 0; i < window.card.cards.length; i++) {
-      fragment.appendChild(creatPin(window.card.cards[i]));
+    for (var i = 0; i < window.data.cards.length; i++) {
+      fragment.appendChild(creatPin(window.data.cards[i]));
     }
 
-    window.variables.mapPinsWrapper.appendChild(fragment);
+    mapPinsWrapper.appendChild(fragment);
+  };
+
+  window.pin = {
+    setPinsToMap: setPinsToMap,
   };
 })();

@@ -7,6 +7,7 @@
   var typeSelect = document.querySelector('#type');
   var timeInSelect = document.querySelector('#timein');
   var timeOutSelect = document.querySelector('#timeout');
+  var address = document.querySelector('#address');
 
   var disableForm = function (status) {
     var adFormForm = document.querySelector('.ad-form');
@@ -18,16 +19,7 @@
       adFormForm.classList.remove('ad-form--disabled');
     }
 
-    switchDisableStatus(adFormFieldsets, status);
-  };
-  var switchDisableStatus = function (array, status) {
-    for (var i = 0; i < array.length; i++) {
-      if (status) {
-        array[i].setAttribute('disabled', status);
-      } else {
-        array[i].removeAttribute('disabled');
-      }
-    }
+    window.utils.switchDisableStatus(adFormFieldsets, status);
   };
   var switchMinPrice = function () {
     var typeSelectValue = typeSelect.value;
@@ -46,7 +38,6 @@
     }
   };
   var setAddress = function (value) {
-    var address = document.querySelector('#address');
 
     address.value = value;
   };
@@ -82,7 +73,6 @@
 
   window.form = {
     disableForm: disableForm,
-    switchDisableStatus: switchDisableStatus,
     switchMinPrice: switchMinPrice,
     setAddress: setAddress,
   };
