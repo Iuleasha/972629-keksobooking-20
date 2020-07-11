@@ -5,6 +5,8 @@
   var mainPinWidth = mapPinMain.offsetWidth;
   var mainPinHeight = mapPinMain.offsetHeight;
   var mapClientRect = window.pin.mapPinsWrapper.getBoundingClientRect();
+  var MIN_MAP_HEIGHT = 130;
+  var MAX_MAP_HEIGHT = 630;
 
   var setMainPinCoordinates = function () {
     var mainPinTop = mapPinMain.offsetTop;
@@ -13,7 +15,7 @@
     if (!window.map.isActive) {
       window.form.setAddress(Math.round(mainPinLeft + mainPinWidth / 2) + ', ' + Math.round(mainPinTop + mainPinHeight / 2));
     } else {
-      window.form.setAddress(Math.round(mainPinLeft + mainPinWidth / 2) + ', ' + Math.round(mainPinTop + mainPinHeight + window.pin.pinArrowHeight));
+      window.form.setAddress(Math.round(mainPinLeft + mainPinWidth / 2) + ', ' + Math.round(mainPinTop + mainPinHeight));
     }
   };
 
@@ -29,16 +31,9 @@
       y: evt.clientY,
     };
 
-    var dragged = false;
-
     var onMouseMove = function (moveEvt) {
       moveEvt.preventDefault();
 
-      if (moveEvt.pageY >= window.data.maxMapHeight || moveEvt.pageY < window.data.minMapHeight || moveEvt.pageX < mapClientRect.left || moveEvt.pageX > mapClientRect.right) {
-        return;
-      }
-
-      dragged = true;
 
       var shift = {
         x: startCoords.x - moveEvt.clientX,
@@ -50,8 +45,17 @@
         y: moveEvt.clientY,
       };
 
+      if (mapPinMain.offsetTop - shift.y + mainPinHeight >= MAX_MAP_HEIGHT ||
+        mapPinMain.offsetTop - shift.y + mainPinHeight < MIN_MAP_HEIGHT ||
+        mapPinMain.offsetLeft - shift.x + mainPinWidth < mapClientRect.left ||
+        mapPinMain.offsetLeft - shift.x + mainPinWidth > mapClientRect.right) {
+        return;
+      }
+
       mapPinMain.style.top = (mapPinMain.offsetTop - shift.y) + 'px';
       mapPinMain.style.left = (mapPinMain.offsetLeft - shift.x) + 'px';
+
+      setMainPinCoordinates();
     };
 
     var onMouseUp = function (upEvt) {
@@ -60,15 +64,13 @@
       document.removeEventListener('mousemove', onMouseMove);
       document.removeEventListener('mouseup', onMouseUp);
 
-      if (dragged) {
-        var onClickPreventDefault = function (clickEvt) {
-          clickEvt.preventDefault();
+      var onClickPreventDefault = function (clickEvt) {
+        clickEvt.preventDefault();
 
-          setMainPinCoordinates();
-          mapPinMain.removeEventListener('click', onClickPreventDefault);
-        };
-        mapPinMain.addEventListener('click', onClickPreventDefault);
-      }
+        mapPinMain.removeEventListener('click', onClickPreventDefault);
+      };
+
+      mapPinMain.addEventListener('click', onClickPreventDefault);
     };
 
     document.addEventListener('mousemove', onMouseMove);
