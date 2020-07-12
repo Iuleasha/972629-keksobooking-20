@@ -2,7 +2,6 @@
 
 (function () {
   window.loadData = function (url, onSuccess) {
-    var _cards = [];
     var xhr = new XMLHttpRequest();
 
     xhr.responseType = 'json';
@@ -15,7 +14,5 @@
 
     xhr.open('GET', url);
     xhr.send();
-
-    return _cards;
   };
 })();
