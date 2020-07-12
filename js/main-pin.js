@@ -4,7 +4,6 @@
   var mapPinMain = document.querySelector('.map__pin--main');
   var mainPinWidth = mapPinMain.offsetWidth;
   var mainPinHeight = mapPinMain.offsetHeight;
-  var mapClientRect = window.pin.mapPinsWrapper.getBoundingClientRect();
   var MIN_MAP_HEIGHT = 130;
   var MAX_MAP_HEIGHT = 630;
 
@@ -34,7 +33,19 @@
     var onMouseMove = function (moveEvt) {
       moveEvt.preventDefault();
 
+      var underMoveElement = document.elementFromPoint(moveEvt.clientX, moveEvt.clientY);
 
+      if (!underMoveElement) {
+        return;
+      }
+
+      var mapPins = underMoveElement.closest('.map__pins');
+
+      if (!mapPins) {
+        return;
+      }
+
+      var mapClientRect = window.pin.mapPinsWrapper.getBoundingClientRect();
       var shift = {
         x: startCoords.x - moveEvt.clientX,
         y: startCoords.y - moveEvt.clientY,
@@ -45,17 +56,23 @@
         y: moveEvt.clientY,
       };
 
-      if (mapPinMain.offsetTop - shift.y + mainPinHeight >= MAX_MAP_HEIGHT ||
-        mapPinMain.offsetTop - shift.y + mainPinHeight < MIN_MAP_HEIGHT ||
-        mapPinMain.offsetLeft - shift.x + mainPinWidth < mapClientRect.left ||
-        mapPinMain.offsetLeft - shift.x + mainPinWidth > mapClientRect.right) {
-        return;
-      }
+      var top = setCoordinates(mapPinMain.offsetTop - shift.y, MIN_MAP_HEIGHT, MAX_MAP_HEIGHT, mainPinHeight);
+      var left = setCoordinates(mapPinMain.offsetLeft - shift.x, 0, mapClientRect.width, mainPinWidth / 2);
 
-      mapPinMain.style.top = (mapPinMain.offsetTop - shift.y) + 'px';
-      mapPinMain.style.left = (mapPinMain.offsetLeft - shift.x) + 'px';
+      mapPinMain.style.top = top + 'px';
+      mapPinMain.style.left = left + 'px';
 
       setMainPinCoordinates();
+    };
+
+    var setCoordinates = function (current, min, max, pinSize) {
+      if (current <= min - pinSize) {
+        return min - pinSize;
+      } else if (current >= max - pinSize) {
+        return max - pinSize;
+      } else {
+        return current;
+      }
     };
 
     var onMouseUp = function (upEvt) {
