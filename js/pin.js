@@ -1,6 +1,8 @@
 'use strict';
 
 (function () {
+  var mapPinsWrapper = document.querySelector('.map__pins');
+
   var creatPin = function (pinInfo) {
     var pinTemplate = document.querySelector('#pin');
     var pin = pinTemplate.content.querySelector('.map__pin').cloneNode(true);
@@ -21,7 +23,6 @@
   };
 
   var setPinsToMap = function () {
-    var mapPinsWrapper = document.querySelector('.map__pins');
     var fragment = document.createDocumentFragment();
 
     for (var i = 0; i < window.data.cards.length; i++) {
@@ -33,5 +34,6 @@
 
   window.pin = {
     setPinsToMap: setPinsToMap,
+    mapPinsWrapper: mapPinsWrapper,
   };
 })();
