@@ -2,9 +2,11 @@
 
 (function () {
   var deactivatePage = function () {
+    window.map.isActive = false;
     window.filter.disableFilter(true);
     window.form.disableForm(true);
     window.mainPin.setMainPinCoordinates();
+    window.card.map.classList.add('map--faded');
   };
 
   var activatePage = function () {
@@ -17,5 +19,6 @@
 
   window.main = {
     activatePage: activatePage,
+    deactivatePage: deactivatePage,
   };
 })();

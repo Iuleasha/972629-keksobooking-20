@@ -14,7 +14,7 @@
     var mapCard = cardTemplate.content.querySelector('.map__card').cloneNode(true);
 
     mapCard.querySelector('.popup__title').textContent = card.offer.title;
-    mapCard.querySelector('.popup__text--address').textContent = card.offer.address();
+    mapCard.querySelector('.popup__text--address').textContent = card.offer.address;
     mapCard.querySelector('.popup__text--price').innerHTML = card.offer.price + '₽<span>/ночь</span>';
     mapCard.querySelector('.popup__type').textContent = PROPERTY_TYPES[card.offer.type];
     mapCard.querySelector('.popup__text--capacity').textContent = card.offer.rooms + ' комнаты для ' + card.offer.guests + ' гостей';

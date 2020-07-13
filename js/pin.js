@@ -7,8 +7,8 @@
     var pinTemplate = document.querySelector('#pin');
     var pin = pinTemplate.content.querySelector('.map__pin').cloneNode(true);
 
-    pin.style.left = pinInfo.offer.location.x - pin.offsetWidth / 2 + 'px';
-    pin.style.top = pinInfo.offer.location.y - pin.offsetHeight + 'px';
+    pin.style.left = pinInfo.location.x - pin.offsetWidth / 2 + 'px';
+    pin.style.top = pinInfo.location.y - pin.offsetHeight + 'px';
 
     var pinImg = pin.querySelector('img');
 
@@ -22,18 +22,22 @@
     return pin;
   };
 
-  var setPinsToMap = function () {
+  var getPinsData = function () {
+    window.loadData(setPinsToMap);
+  };
+
+  var setPinsToMap = function (data) {
     var fragment = document.createDocumentFragment();
 
-    for (var i = 0; i < window.data.cards.length; i++) {
-      fragment.appendChild(creatPin(window.data.cards[i]));
+    for (var i = 0; i < data.length; i++) {
+      fragment.appendChild(creatPin(data[i]));
     }
 
     mapPinsWrapper.appendChild(fragment);
   };
 
   window.pin = {
-    setPinsToMap: setPinsToMap,
+    getPinsData: getPinsData,
     mapPinsWrapper: mapPinsWrapper,
   };
 })();
