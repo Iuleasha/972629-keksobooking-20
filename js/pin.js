@@ -23,7 +23,7 @@
   };
 
   var getPinsData = function () {
-    window.loadData('https://javascript.pages.academy/keksobooking/data', setPinsToMap);
+    window.loadData(setPinsToMap);
   };
 
   var setPinsToMap = function (data) {
