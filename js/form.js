@@ -8,15 +8,16 @@
   var timeInSelect = document.querySelector('#timein');
   var timeOutSelect = document.querySelector('#timeout');
   var address = document.querySelector('#address');
+  var formSubmitButton = document.querySelector('.ad-form__submit');
+  var adForm = document.querySelector('.ad-form');
 
   var disableForm = function (status) {
-    var adFormForm = document.querySelector('.ad-form');
-    var adFormFieldsets = adFormForm.querySelectorAll('fieldset');
+    var adFormFieldsets = adForm.querySelectorAll('fieldset');
 
     if (status) {
-      adFormForm.classList.add('ad-form--disabled');
+      adForm.classList.add('ad-form--disabled');
     } else {
-      adFormForm.classList.remove('ad-form--disabled');
+      adForm.classList.remove('ad-form--disabled');
     }
 
     window.utils.switchDisableStatus(adFormFieldsets, status);
@@ -70,6 +71,50 @@
 
   switchMinPrice();
   addRoomCapacityValidation();
+
+  formSubmitButton.addEventListener('click', function (evt) {
+    evt.preventDefault();
+    window.sendForm(new FormData(adForm), onSuccess);
+  });
+
+  var onSuccess = function () {
+    var onSuccessTemplate = document.querySelector('#success');
+    var onSuccessCreate = onSuccessTemplate.content.querySelector('.success').cloneNode(true);
+
+    var fragment = document.createDocumentFragment();
+
+    fragment.appendChild(onSuccessCreate);
+    window.error.mainWrapper.appendChild(fragment);
+
+    var successWrapper = window.error.mainWrapper.querySelector('.success');
+    var removeSuccessPopup = function () {
+      successWrapper.removeEventListener('click', removeSuccessPopup);
+      document.removeEventListener('keydown', onEscPress);
+      window.error.mainWrapper.querySelector('.success').remove();
+    };
+
+    var onEscPress = function (evt) {
+      if (evt.key === 'Escape') {
+        removeSuccessPopup();
+      }
+    };
+
+    successWrapper.addEventListener('click', removeSuccessPopup);
+    document.addEventListener('keydown', onEscPress);
+
+
+    window.main.deactivatePage();
+
+    formReset();
+    window.pin.clearPins();
+  };
+
+  var clearButton = adForm.querySelector('.ad-form__reset');
+  var formReset = function () {
+    adForm.reset();
+    clearButton.removeEventListener('click', formReset);
+  };
+  clearButton.addEventListener('click', formReset);
 
   window.form = {
     disableForm: disableForm,

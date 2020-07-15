@@ -22,10 +22,6 @@
     return pin;
   };
 
-  var getPinsData = function () {
-    window.loadData(setPinsToMap);
-  };
-
   var setPinsToMap = function (data) {
     var fragment = document.createDocumentFragment();
 
@@ -35,9 +31,18 @@
 
     mapPinsWrapper.appendChild(fragment);
   };
+  var clearPins = function () {
+    var pins = mapPinsWrapper.querySelectorAll('.map__pin');
+    for (var i = 0; i < pins.length; i++) {
+      if (!pins[i].classList.contains('map__pin--main')) {
+        mapPinsWrapper.removeChild(pins[i]);
+      }
+    }
 
+  };
   window.pin = {
-    getPinsData: getPinsData,
+    setPinsToMap: setPinsToMap,
     mapPinsWrapper: mapPinsWrapper,
+    clearPins: clearPins,
   };
 })();
