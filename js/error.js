@@ -1,42 +1,54 @@
 'use strict';
 
 (function () {
-  var onErrorTemplate = document.querySelector('#error');
-  var onErrorCreate = onErrorTemplate.content.querySelector('.error').cloneNode(true);
+  var errorTemplate = document.querySelector('#error');
   var mainWrapper = document.querySelector('main');
-  var errorMessageWrapper = onErrorCreate.querySelector('.error__message');
-  var onError = function (errorMessage) {
+
+  var getCloneNode = function () {
+    return errorTemplate.content.querySelector('.error').cloneNode(true);
+  };
+
+  var onFormError = function () {
     window.main.deactivatePage();
+    mainWrapper.appendChild(getCloneNode());
+    closeErrorPopUp();
+  };
 
-    var fragment = document.createDocumentFragment();
+  var onError = function (errorMessage) {
+    var errorCloneNode = getCloneNode();
+    var errorMessageWrapper = errorCloneNode.querySelector('.error__message');
 
-    if (errorMessage) {
-      errorMessageWrapper.textContent = errorMessage;
-    }
+    errorMessageWrapper.textContent = errorMessage;
 
-    fragment.appendChild(onErrorCreate);
-    mainWrapper.appendChild(fragment);
+    window.main.deactivatePage();
+    mainWrapper.appendChild(errorCloneNode);
+    closeErrorPopUp();
+  };
 
+  var closeErrorPopUp = function () {
     var errorWrapper = mainWrapper.querySelector('.error');
 
-    var removeErrorPopup = function () {
-      errorWrapper.removeEventListener('click', removeErrorPopup);
-      document.removeEventListener('keydown', onEscPress);
-      mainWrapper.querySelector('.error').remove();
-    };
+    if (errorWrapper) {
+      var removeErrorPopup = function () {
+        mainWrapper.querySelector('.error').remove();
+        errorWrapper.removeEventListener('click', removeErrorPopup);
+        document.removeEventListener('keydown', onEscPress);
+      };
 
-    var onEscPress = function (evt) {
-      if (evt.key === 'Escape') {
-        removeErrorPopup();
-      }
-    };
+      var onEscPress = function (evt) {
+        if (evt.key === 'Escape') {
+          removeErrorPopup();
+        }
+      };
 
-    errorWrapper.addEventListener('click', removeErrorPopup);
-    document.addEventListener('keydown', onEscPress);
+      errorWrapper.addEventListener('click', removeErrorPopup);
+      document.addEventListener('keydown', onEscPress);
+    }
   };
 
   window.error = {
     mainWrapper: mainWrapper,
     onError: onError,
+    onFormError: onFormError,
   };
 })();

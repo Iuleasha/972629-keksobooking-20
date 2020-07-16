@@ -3,15 +3,15 @@
 (function () {
   var deactivatePage = function () {
     window.map.isActive = false;
-    window.filter.disableFilter(true);
-    window.form.disableForm(true);
+    window.filter.disableFilter();
+    window.form.disableForm();
     window.mainPin.setMainPinCoordinates();
     window.card.map.classList.add('map--faded');
   };
 
   var activatePage = function () {
-    window.filter.disableFilter(false);
-    window.form.disableForm(false);
+    window.filter.enableFilter();
+    window.form.enableForm();
     window.mainPin.setMainPinCoordinates();
   };
 

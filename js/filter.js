@@ -1,20 +1,26 @@
 'use strict';
 
 (function () {
-  var disableFilter = function (status) {
-    var filterWrapper = document.querySelector('.map__filters');
-    var selectFilter = filterWrapper.querySelectorAll('select');
+  var enableFilter = function () {
+    getFilterWrapper().querySelector('fieldset').setAttribute('disabled', true);
+    window.utils.removeDisableStatus(selectFilter());
+  };
 
-    if (status) {
-      filterWrapper.querySelector('fieldset').setAttribute('disabled', status);
-    } else {
-      filterWrapper.removeAttribute('disabled');
-    }
+  var disableFilter = function () {
+    getFilterWrapper().removeAttribute('disabled');
+    window.utils.addDisableStatus(selectFilter());
+  };
 
-    window.utils.switchDisableStatus(selectFilter, status);
+  var getFilterWrapper = function () {
+    return document.querySelector('.map__filters');
+  };
+
+  var selectFilter = function () {
+    return getFilterWrapper().querySelectorAll('select');
   };
 
   window.filter = {
     disableFilter: disableFilter,
+    enableFilter: enableFilter,
   };
 })();

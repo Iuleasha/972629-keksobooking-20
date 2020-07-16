@@ -32,11 +32,10 @@
     mapPinsWrapper.appendChild(fragment);
   };
   var clearPins = function () {
-    var pins = mapPinsWrapper.querySelectorAll('.map__pin');
+    var pins = mapPinsWrapper.querySelectorAll('.map__pin:not(.map__pin--main)');
+
     for (var i = 0; i < pins.length; i++) {
-      if (!pins[i].classList.contains('map__pin--main')) {
-        mapPinsWrapper.removeChild(pins[i]);
-      }
+      mapPinsWrapper.removeChild(pins[i]);
     }
 
   };
