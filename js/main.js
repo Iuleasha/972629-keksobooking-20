@@ -7,6 +7,7 @@
     window.form.disableForm();
     window.mainPin.setMainPinCoordinates();
     window.card.map.classList.add('map--faded');
+    window.pin.clearPins();
   };
 
   var activatePage = function () {
