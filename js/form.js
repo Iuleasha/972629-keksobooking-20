@@ -8,19 +8,23 @@
   var timeInSelect = document.querySelector('#timein');
   var timeOutSelect = document.querySelector('#timeout');
   var address = document.querySelector('#address');
+  var formSubmitButton = document.querySelector('.ad-form__submit');
+  var adForm = document.querySelector('.ad-form');
 
-  var disableForm = function (status) {
-    var adFormForm = document.querySelector('.ad-form');
-    var adFormFieldsets = adFormForm.querySelectorAll('fieldset');
-
-    if (status) {
-      adFormForm.classList.add('ad-form--disabled');
-    } else {
-      adFormForm.classList.remove('ad-form--disabled');
-    }
-
-    window.utils.switchDisableStatus(adFormFieldsets, status);
+  var getAdFormFieldsets = function () {
+    return adForm.querySelectorAll('fieldset');
   };
+
+  var disableForm = function () {
+    adForm.classList.add('ad-form--disabled');
+    window.utils.addDisableStatus(getAdFormFieldsets());
+  };
+
+  var enableForm = function () {
+    adForm.classList.remove('ad-form--disabled');
+    window.utils.removeDisableStatus(getAdFormFieldsets());
+  };
+
   var switchMinPrice = function () {
     var typeSelectValue = typeSelect.value;
     if (typeSelectValue === 'bungalo') {
@@ -71,9 +75,26 @@
   switchMinPrice();
   addRoomCapacityValidation();
 
+  formSubmitButton.addEventListener('click', function (evt) {
+    evt.preventDefault();
+    window.data.sendForm(new FormData(adForm), window.success.onSuccess, window.error.onFormError);
+  });
+
+
+  var clearButton = adForm.querySelector('.ad-form__reset');
+
+  var formReset = function () {
+    adForm.reset();
+    clearButton.removeEventListener('click', formReset);
+  };
+
+  clearButton.addEventListener('click', formReset);
+
   window.form = {
     disableForm: disableForm,
+    enableForm: enableForm,
     switchMinPrice: switchMinPrice,
     setAddress: setAddress,
+    formReset: formReset,
   };
 })();

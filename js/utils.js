@@ -17,13 +17,14 @@
       return Math.random() - 0.5;
     });
   };
-  var switchDisableStatus = function (array, status) {
+  var addDisableStatus = function (array) {
     for (var i = 0; i < array.length; i++) {
-      if (status) {
-        array[i].setAttribute('disabled', status);
-      } else {
-        array[i].removeAttribute('disabled');
-      }
+      array[i].setAttribute('disabled', true);
+    }
+  };
+  var removeDisableStatus = function (array) {
+    for (var i = 0; i < array.length; i++) {
+      array[i].removeAttribute('disabled');
     }
   };
 
@@ -32,6 +33,7 @@
     getRandomNumber: getRandomNumber,
     sliceArrayWithRandomLength: sliceArrayWithRandomLength,
     shuffleArray: shuffleArray,
-    switchDisableStatus: switchDisableStatus,
+    addDisableStatus: addDisableStatus,
+    removeDisableStatus: removeDisableStatus,
   };
 })();
