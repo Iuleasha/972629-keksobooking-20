@@ -11,7 +11,7 @@
     if (window.pin.pinData.length > 0) {
       window.pin.setPinsToMap(window.pin.pinData);
     } else {
-      window.data.loadData(window.pin.getPinData);
+      window.data.loadData(window.pin.setPinData);
     }
     window.main.activatePage();
   };

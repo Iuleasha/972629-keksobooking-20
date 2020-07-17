@@ -1,48 +1,38 @@
 'use strict';
 
 (function () {
+  var mapFiltersWrapper = document.querySelector('.map__filters');
+  var allSelects = mapFiltersWrapper.querySelectorAll('select');
+  var housingTypeSelect = mapFiltersWrapper.querySelector('#housing-type');
+
   var enableFilter = function () {
-    getFilterWrapper().removeAttribute('disabled');
-    window.utils.removeDisableStatus(selectFilter());
+    housingTypeSelect.addEventListener('input', filterOffers);
+    mapFiltersWrapper.querySelector('fieldset').removeAttribute('disabled');
+    window.utils.removeDisableStatus(allSelects);
   };
 
   var disableFilter = function () {
-    getFilterWrapper().reset();
-    getFilterWrapper().querySelector('fieldset').setAttribute('disabled', true);
-    window.utils.addDisableStatus(selectFilter());
+    housingTypeSelect.removeEventListener('input', filterOffers);
+    mapFiltersWrapper.reset();
+    mapFiltersWrapper.querySelector('fieldset').setAttribute('disabled', true);
+    window.utils.addDisableStatus(allSelects);
   };
 
-  var getFilterWrapper = function () {
-    return document.querySelector('.map__filters');
-  };
+  var filterOffers = function () {
+    var housingTypeValue = housingTypeSelect.value;
 
-  var selectFilter = function () {
-    return getFilterWrapper().querySelectorAll('select');
-  };
-
-  var housingTypeFilter = function () {
-    var housingType = document.querySelector('#housing-type');
-
-    housingType.addEventListener('input', function () {
-      window.pin.clearPins();
-      window.card.closeCardPopUp();
-      var value = housingType.value;
-
-      if (value === 'any') {
-        window.pin.setPinsToMap(window.pin.pinData);
-
-        return;
-      }
-
-      var filteredData = window.pin.pinData.filter(function (item) {
-        return item.offer.type === value;
-      });
-
-      window.pin.setPinsToMap(filteredData);
+    var filteredData = window.pin.pinData.filter(function (item) {
+      return compareSelectValue(item.offer.type, housingTypeValue);
     });
+
+    window.card.closeCardPopUp();
+    window.pin.clearPins();
+    window.pin.setPinsToMap(filteredData);
   };
 
-  housingTypeFilter();
+  var compareSelectValue = function (itemValuse, selectValue) {
+    return selectValue === 'any' || itemValuse === selectValue;
+  };
 
   window.filter = {
     disableFilter: disableFilter,
