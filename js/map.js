@@ -8,7 +8,11 @@
 
     window.map.isActive = true;
     window.card.map.classList.remove('map--faded');
-    window.data.loadData(window.pin.setPinsToMap);
+    if (window.pin.pinData.length > 0) {
+      window.pin.setPinsToMap(window.pin.pinData);
+    } else {
+      window.data.loadData(window.pin.setPinData);
+    }
     window.main.activatePage();
   };
 

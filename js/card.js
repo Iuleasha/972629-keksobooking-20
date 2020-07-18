@@ -83,5 +83,6 @@
   window.card = {
     map: document.querySelector('.map'),
     openCardPopUp: openCardPopUp,
+    closeCardPopUp: closeCardPopUp,
   };
 })();

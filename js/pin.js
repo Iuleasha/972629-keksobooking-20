@@ -22,26 +22,37 @@
     return pin;
   };
 
+  var setPinData = function (data) {
+    window.pin.pinData = data;
+
+    setPinsToMap(data);
+  };
+
   var setPinsToMap = function (data) {
     var fragment = document.createDocumentFragment();
 
-    for (var i = 0; i < data.length; i++) {
+    for (var i = 0; i < 5 && i < data.length; i++) {
       fragment.appendChild(creatPin(data[i]));
     }
 
     mapPinsWrapper.appendChild(fragment);
   };
+
   var clearPins = function () {
     var pins = mapPinsWrapper.querySelectorAll('.map__pin:not(.map__pin--main)');
 
-    for (var i = 0; i < pins.length; i++) {
-      mapPinsWrapper.removeChild(pins[i]);
+    if (pins.length > 0) {
+      for (var i = 0; i < pins.length; i++) {
+        mapPinsWrapper.removeChild(pins[i]);
+      }
     }
-
   };
+
   window.pin = {
+    setPinData: setPinData,
     setPinsToMap: setPinsToMap,
     mapPinsWrapper: mapPinsWrapper,
     clearPins: clearPins,
+    pinData: [],
   };
 })();
