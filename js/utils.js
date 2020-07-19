@@ -1,6 +1,8 @@
 'use strict';
 
 (function () {
+  var DEBOUNCE_INTERVAL = 500;
+
   var getRandomItemFromArray = function (array) {
     var randomArrayItemIndex = Math.floor(Math.random() * array.length);
 
@@ -27,6 +29,21 @@
       array[i].removeAttribute('disabled');
     }
   };
+  var debounce = function (cb) {
+    var lastTimeout = null;
+
+    return function () {
+      var parameters = arguments;
+
+      if (lastTimeout) {
+        window.clearTimeout(lastTimeout);
+      }
+
+      lastTimeout = window.setTimeout(function () {
+        cb.apply(null, parameters);
+      }, DEBOUNCE_INTERVAL);
+    };
+  };
 
   window.utils = {
     getRandomItemFromArray: getRandomItemFromArray,
@@ -35,5 +52,6 @@
     shuffleArray: shuffleArray,
     addDisableStatus: addDisableStatus,
     removeDisableStatus: removeDisableStatus,
+    debounce: debounce,
   };
 })();
