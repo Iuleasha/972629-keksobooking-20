@@ -12,13 +12,13 @@
   var offersFeatures = mapFiltersWrapper.querySelectorAll('.map__checkbox');
 
   var enableFilter = function () {
-    housingTypeSelect.addEventListener('input', filterOffers);
-    housingPriceSelect.addEventListener('input', filterOffers);
-    housingRoomsSelect.addEventListener('input', filterOffers);
-    housingGuestsSelect.addEventListener('input', filterOffers);
+    housingTypeSelect.addEventListener('input', filterOffersDebounce);
+    housingPriceSelect.addEventListener('input', filterOffersDebounce);
+    housingRoomsSelect.addEventListener('input', filterOffersDebounce);
+    housingGuestsSelect.addEventListener('input', filterOffersDebounce);
 
     for (var i = 0; i < offersFeatures.length; i++) {
-      offersFeatures[i].addEventListener('input', filterOffers);
+      offersFeatures[i].addEventListener('input', filterOffersDebounce);
     }
 
     mapFiltersWrapper.querySelector('fieldset').removeAttribute('disabled');
@@ -26,13 +26,13 @@
   };
 
   var disableFilter = function () {
-    housingTypeSelect.removeEventListener('input', filterOffers);
-    housingPriceSelect.removeEventListener('input', filterOffers);
-    housingRoomsSelect.removeEventListener('input', filterOffers);
-    housingGuestsSelect.removeEventListener('input', filterOffers);
+    housingTypeSelect.removeEventListener('input', filterOffersDebounce);
+    housingPriceSelect.removeEventListener('input', filterOffersDebounce);
+    housingRoomsSelect.removeEventListener('input', filterOffersDebounce);
+    housingGuestsSelect.removeEventListener('input', filterOffersDebounce);
 
     for (var i = 0; i < offersFeatures.length; i++) {
-      offersFeatures[i].removeEventListener('input', filterOffers);
+      offersFeatures[i].removeEventListener('input', filterOffersDebounce);
     }
 
     mapFiltersWrapper.reset();
@@ -40,7 +40,7 @@
     window.utils.addDisableStatus(allSelects);
   };
 
-  var filterOffers = window.utils.debounce(function () {
+  var filterOffers = function () {
     var housingTypeValue = housingTypeSelect.value;
     var housingPriceValue = housingPriceSelect.value;
     var housingRoomsValue = housingRoomsSelect.value;
@@ -51,7 +51,7 @@
       return checkbox.value;
     });
 
-    var filteredData = window.utils.shuffleArray(window.pin.pinData).filter(function (item) {
+    var filteredData = window.pin.pinData.filter(function (item) {
       return compareSelectValue(item.offer.type, housingTypeValue) &&
         compareValueByPrice(item.offer.price, housingPriceValue) &&
         compareSelectValue(String(item.offer.rooms), housingRoomsValue) &&
@@ -62,29 +62,31 @@
     window.card.closeCardPopUp();
     window.pin.clearPins();
     window.pin.setPinsToMap(filteredData);
-  });
+  };
+
+  var filterOffersDebounce = window.utils.debounce(filterOffers);
 
   var compareSelectValue = function (itemValue, selectValue) {
     return selectValue === 'any' || itemValue === selectValue;
   };
 
   var compareValueByPrice = function (itemValue, selectValue) {
-    return selectValue === 'any' ||
-      selectValue === 'middle' && itemValue >= MIDDLE_LOW_PRICE && itemValue <= MIDDLE_HIGH_PRICE ||
-      selectValue === 'low' && itemValue > MIDDLE_LOW_PRICE ||
-      selectValue === 'high' && itemValue > MIDDLE_HIGH_PRICE;
+    switch (selectValue) {
+      case 'middle':
+        return itemValue >= MIDDLE_LOW_PRICE && itemValue <= MIDDLE_HIGH_PRICE;
+      case 'low':
+        return itemValue > MIDDLE_LOW_PRICE;
+      case 'high':
+        return itemValue > MIDDLE_HIGH_PRICE;
+      default:
+        return true;
+    }
   };
 
   var filterOffersByFeatures = function (checkedFeatures, offerFeatures) {
-    var count = 0;
-
-    checkedFeatures.forEach(function (val) {
-      if (offerFeatures.includes(val)) {
-        count++;
-      }
+    return checkedFeatures.every(function (val) {
+      return offerFeatures.includes(val);
     });
-
-    return count === checkedFeatures.length;
   };
 
   window.filter = {
