@@ -10,6 +10,8 @@
   var address = document.querySelector('#address');
   var formSubmitButton = document.querySelector('.ad-form__submit');
   var adForm = document.querySelector('.ad-form');
+  var avatar = document.querySelector('#avatar');
+  var images = document.querySelector('#images');
 
   var getAdFormFieldsets = function () {
     return adForm.querySelectorAll('fieldset');
@@ -17,12 +19,46 @@
 
   var disableForm = function () {
     adForm.classList.add('ad-form--disabled');
+    avatar.removeEventListener('change', uploadAvatar);
+    images.removeEventListener('change', uploadImages);
     window.utils.addDisableStatus(getAdFormFieldsets());
   };
 
   var enableForm = function () {
     adForm.classList.remove('ad-form--disabled');
+    avatar.addEventListener('change', uploadAvatar);
+    images.addEventListener('change', uploadImages);
     window.utils.removeDisableStatus(getAdFormFieldsets());
+  };
+
+  var uploadAvatar = function () {
+    var preview = adForm.querySelector('.ad-form-header__preview img');
+
+    loadFile(avatar, preview);
+  };
+
+  var uploadImages = function () {
+    var preview = adForm.querySelector('.ad-form__photo');
+    var img = preview.querySelector('img');
+
+    if (img) {
+      loadFile(images, img);
+    } else {
+      img = document.createElement('img');
+      loadFile(images, img);
+      preview.appendChild(img);
+    }
+  };
+
+  var loadFile = function (fileChooser, preview) {
+    var file = fileChooser.files[0];
+    var reader = new FileReader();
+
+    reader.addEventListener('load', function () {
+      preview.src = reader.result;
+    });
+
+    reader.readAsDataURL(file);
   };
 
   var switchMinPrice = function () {
@@ -42,7 +78,6 @@
     }
   };
   var setAddress = function (value) {
-
     address.value = value;
   };
   var addRoomCapacityValidation = function () {
