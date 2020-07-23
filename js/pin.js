@@ -23,9 +23,13 @@
   };
 
   var setPinData = function (data) {
-    window.pin.pinData = data;
+    var filteredData = data.filter(function (item) {
+      return item.hasOwnProperty('offer');
+    });
 
-    setPinsToMap(data);
+    window.pin.pinData = filteredData;
+
+    setPinsToMap(filteredData);
   };
 
   var setPinsToMap = function (data) {

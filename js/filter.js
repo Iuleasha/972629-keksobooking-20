@@ -35,9 +35,13 @@
       offersFeatures[i].removeEventListener('input', filterOffersDebounce);
     }
 
-    mapFiltersWrapper.reset();
+    resetFilter();
     mapFiltersWrapper.querySelector('fieldset').setAttribute('disabled', true);
     window.utils.addDisableStatus(allSelects);
+  };
+
+  var resetFilter = function () {
+    mapFiltersWrapper.reset();
   };
 
   var filterOffers = function () {
@@ -92,5 +96,6 @@
   window.filter = {
     disableFilter: disableFilter,
     enableFilter: enableFilter,
+    resetFilter: resetFilter,
   };
 })();

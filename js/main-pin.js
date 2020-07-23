@@ -8,13 +8,11 @@
   var MAX_MAP_HEIGHT = 630;
 
   var setMainPinCoordinates = function () {
-    var mainPinTop = mapPinMain.offsetTop;
-    var mainPinLeft = mapPinMain.offsetLeft;
-
     if (!window.map.isActive) {
-      window.form.setAddress(Math.round(mainPinLeft + mainPinWidth / 2) + ', ' + Math.round(mainPinTop + mainPinHeight / 2));
+      mapPinMain.removeAttribute('style');
+      window.form.setAddress(Math.round(mapPinMain.offsetLeft + mainPinWidth / 2) + ', ' + Math.round(mapPinMain.offsetTop + mainPinHeight / 2));
     } else {
-      window.form.setAddress(Math.round(mainPinLeft + mainPinWidth / 2) + ', ' + Math.round(mainPinTop + mainPinHeight));
+      window.form.setAddress(Math.round(mapPinMain.offsetLeft + mainPinWidth / 2) + ', ' + Math.round(mapPinMain.offsetTop + mainPinHeight));
     }
   };
 

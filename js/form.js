@@ -8,7 +8,6 @@
   var timeInSelect = document.querySelector('#timein');
   var timeOutSelect = document.querySelector('#timeout');
   var address = document.querySelector('#address');
-  var formSubmitButton = document.querySelector('.ad-form__submit');
   var adForm = document.querySelector('.ad-form');
   var avatar = document.querySelector('#avatar');
   var images = document.querySelector('#images');
@@ -21,13 +20,16 @@
     adForm.classList.add('ad-form--disabled');
     avatar.removeEventListener('change', uploadAvatar);
     images.removeEventListener('change', uploadImages);
+    clearButton.removeEventListener('click', formReset);
     window.utils.addDisableStatus(getAdFormFieldsets());
+    adForm.reset();
   };
 
   var enableForm = function () {
     adForm.classList.remove('ad-form--disabled');
     avatar.addEventListener('change', uploadAvatar);
     images.addEventListener('change', uploadImages);
+    clearButton.addEventListener('click', formReset);
     window.utils.removeDisableStatus(getAdFormFieldsets());
   };
 
@@ -110,7 +112,7 @@
   switchMinPrice();
   addRoomCapacityValidation();
 
-  formSubmitButton.addEventListener('click', function (evt) {
+  adForm.addEventListener('submit', function (evt) {
     evt.preventDefault();
     window.data.sendForm(new FormData(adForm), window.success.onSuccess, window.error.onFormError);
   });
@@ -119,11 +121,8 @@
   var clearButton = adForm.querySelector('.ad-form__reset');
 
   var formReset = function () {
-    adForm.reset();
-    clearButton.removeEventListener('click', formReset);
+    window.main.deactivatePage();
   };
-
-  clearButton.addEventListener('click', formReset);
 
   window.form = {
     disableForm: disableForm,
