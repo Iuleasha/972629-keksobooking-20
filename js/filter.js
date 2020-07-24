@@ -9,31 +9,16 @@
   var housingPriceSelect = mapFiltersWrapper.querySelector('#housing-price');
   var housingRoomsSelect = mapFiltersWrapper.querySelector('#housing-rooms');
   var housingGuestsSelect = mapFiltersWrapper.querySelector('#housing-guests');
-  var offersFeatures = mapFiltersWrapper.querySelectorAll('.map__checkbox');
 
   var enableFilter = function () {
-    housingTypeSelect.addEventListener('input', filterOffersDebounce);
-    housingPriceSelect.addEventListener('input', filterOffersDebounce);
-    housingRoomsSelect.addEventListener('input', filterOffersDebounce);
-    housingGuestsSelect.addEventListener('input', filterOffersDebounce);
-
-    for (var i = 0; i < offersFeatures.length; i++) {
-      offersFeatures[i].addEventListener('input', filterOffersDebounce);
-    }
+    mapFiltersWrapper.addEventListener('change', filterOffersDebounce);
 
     mapFiltersWrapper.querySelector('fieldset').removeAttribute('disabled');
     window.utils.removeDisableStatus(allSelects);
   };
 
   var disableFilter = function () {
-    housingTypeSelect.removeEventListener('input', filterOffersDebounce);
-    housingPriceSelect.removeEventListener('input', filterOffersDebounce);
-    housingRoomsSelect.removeEventListener('input', filterOffersDebounce);
-    housingGuestsSelect.removeEventListener('input', filterOffersDebounce);
-
-    for (var i = 0; i < offersFeatures.length; i++) {
-      offersFeatures[i].removeEventListener('input', filterOffersDebounce);
-    }
+    mapFiltersWrapper.removeEventListener('change', filterOffersDebounce);
 
     resetFilter();
     mapFiltersWrapper.querySelector('fieldset').setAttribute('disabled', true);
@@ -55,7 +40,7 @@
       return checkbox.value;
     });
 
-    var filteredData = window.pin.pinData.filter(function (item) {
+    var filteredData = window.pin.data.filter(function (item) {
       return compareSelectValue(item.offer.type, housingTypeValue) &&
         compareValueByPrice(item.offer.price, housingPriceValue) &&
         compareSelectValue(String(item.offer.rooms), housingRoomsValue) &&
@@ -63,9 +48,9 @@
         (checkedFeatures.length === 0 || filterOffersByFeatures(checkedFeatures, item.offer.features));
     });
 
-    window.card.closeCardPopUp();
-    window.pin.clearPins();
-    window.pin.setPinsToMap(filteredData);
+    window.card.close();
+    window.pin.clear();
+    window.pin.setToMap(filteredData);
   };
 
   var filterOffersDebounce = window.utils.debounce(filterOffers);
@@ -94,8 +79,7 @@
   };
 
   window.filter = {
-    disableFilter: disableFilter,
-    enableFilter: enableFilter,
-    resetFilter: resetFilter,
+    disable: disableFilter,
+    enable: enableFilter,
   };
 })();

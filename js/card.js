@@ -53,30 +53,33 @@
 
     return mapCard;
   };
+
   var createPopUpFeatures = function (features) {
     var fragmet = document.createDocumentFragment();
 
-    for (var i = 0; i < features.length; i++) {
+    features.forEach(function (item) {
       var feature = document.createElement('li');
 
-      feature.classList.add('popup__feature', 'popup__feature--' + features[i]);
+      feature.classList.add('popup__feature', 'popup__feature--' + item);
       fragmet.appendChild(feature);
-    }
+    });
 
     return fragmet;
   };
+
   var createPopUpPhotos = function (photos) {
     var fragmet = document.createDocumentFragment();
 
-    for (var i = 0; i < photos.length; i++) {
+    photos.forEach(function (item) {
       var imageTemplate = cardTemplate.content.querySelector('.popup__photo').cloneNode();
 
-      imageTemplate.src = photos[i];
+      imageTemplate.src = item;
       fragmet.appendChild(imageTemplate);
-    }
+    });
 
     return fragmet;
   };
+
   var closeCardPopUp = function () {
     var card = window.card.map.querySelector('.map__card');
 
@@ -86,11 +89,13 @@
       document.removeEventListener('keydown', onEscPress);
     }
   };
+
   var onEscPress = function (evt) {
     if (evt.key === 'Escape') {
       closeCardPopUp();
     }
   };
+
   var openCardPopUp = function (cardInfo) {
     closeCardPopUp();
 
@@ -107,7 +112,7 @@
 
   window.card = {
     map: document.querySelector('.map'),
-    openCardPopUp: openCardPopUp,
-    closeCardPopUp: closeCardPopUp,
+    open: openCardPopUp,
+    close: closeCardPopUp,
   };
 })();

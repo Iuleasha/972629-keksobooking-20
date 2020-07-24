@@ -3,16 +3,16 @@
 (function () {
   var deactivatePage = function () {
     window.map.isActive = false;
-    window.filter.disableFilter();
-    window.form.disableForm();
+    window.filter.disable();
+    window.form.disable();
     window.mainPin.setMainPinCoordinates();
     window.card.map.classList.add('map--faded');
-    window.pin.clearPins();
+    window.pin.clear();
   };
 
   var activatePage = function () {
-    window.filter.enableFilter();
-    window.form.enableForm();
+    window.filter.enable();
+    window.form.enable();
     window.mainPin.setMainPinCoordinates();
   };
 

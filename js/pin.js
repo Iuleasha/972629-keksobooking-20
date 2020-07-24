@@ -3,7 +3,7 @@
 (function () {
   var mapPinsWrapper = document.querySelector('.map__pins');
 
-  var creatPin = function (pinInfo) {
+  var createPin = function (pinInfo) {
     var pinTemplate = document.querySelector('#pin');
     var pin = pinTemplate.content.querySelector('.map__pin').cloneNode(true);
 
@@ -16,7 +16,7 @@
     pinImg.alt = pinInfo.offer.title;
 
     pin.addEventListener('click', function () {
-      window.card.openCardPopUp(pinInfo);
+      window.card.open(pinInfo);
     });
 
     return pin;
@@ -27,7 +27,7 @@
       return item.hasOwnProperty('offer');
     });
 
-    window.pin.pinData = filteredData;
+    window.pin.data = filteredData;
 
     setPinsToMap(filteredData);
   };
@@ -35,9 +35,9 @@
   var setPinsToMap = function (data) {
     var fragment = document.createDocumentFragment();
 
-    for (var i = 0; i < 5 && i < data.length; i++) {
-      fragment.appendChild(creatPin(data[i]));
-    }
+    data.forEach(function (item) {
+      fragment.appendChild(createPin(item));
+    });
 
     mapPinsWrapper.appendChild(fragment);
   };
@@ -45,18 +45,16 @@
   var clearPins = function () {
     var pins = mapPinsWrapper.querySelectorAll('.map__pin:not(.map__pin--main)');
 
-    if (pins.length > 0) {
-      for (var i = 0; i < pins.length; i++) {
-        mapPinsWrapper.removeChild(pins[i]);
-      }
-    }
+    pins.forEach(function (element) {
+      element.remove();
+    });
   };
 
   window.pin = {
-    setPinData: setPinData,
-    setPinsToMap: setPinsToMap,
-    mapPinsWrapper: mapPinsWrapper,
-    clearPins: clearPins,
-    pinData: [],
+    setData: setPinData,
+    setToMap: setPinsToMap,
+    mapWrapper: mapPinsWrapper,
+    clear: clearPins,
+    data: [],
   };
 })();

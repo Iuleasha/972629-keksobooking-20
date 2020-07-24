@@ -20,7 +20,6 @@
 
     errorMessageWrapper.textContent = errorMessage;
 
-    window.main.deactivatePage();
     mainWrapper.appendChild(errorCloneNode);
     closeErrorPopUp();
   };
@@ -48,7 +47,7 @@
 
   window.error = {
     mainWrapper: mainWrapper,
-    onError: onError,
+    show: onError,
     onFormError: onFormError,
   };
 })();

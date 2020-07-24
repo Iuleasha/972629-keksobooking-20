@@ -1,15 +1,12 @@
 'use strict';
 
 (function () {
+  var onSuccessTemplate = document.querySelector('#success').content.querySelector('.success');
 
   var onSuccess = function () {
-    var onSuccessTemplate = document.querySelector('#success');
-    var onSuccessCreate = onSuccessTemplate.content.querySelector('.success').cloneNode(true);
+    var onSuccessCreate = onSuccessTemplate.cloneNode(true);
 
-    var fragment = document.createDocumentFragment();
-
-    fragment.appendChild(onSuccessCreate);
-    window.error.mainWrapper.appendChild(fragment);
+    window.error.mainWrapper.appendChild(onSuccessCreate);
 
     var successWrapper = window.error.mainWrapper.querySelector('.success');
     var removeSuccessPopup = function () {
@@ -26,12 +23,9 @@
 
     successWrapper.addEventListener('click', removeSuccessPopup);
     document.addEventListener('keydown', onEscPress);
-    window.main.deactivatePage();
-    window.form.formReset();
-    window.pin.clearPins();
-  };
-  window.success = {
-    onSuccess: onSuccess,
   };
 
+  window.success = {
+    show: onSuccess,
+  };
 })();

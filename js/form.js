@@ -114,8 +114,18 @@
 
   adForm.addEventListener('submit', function (evt) {
     evt.preventDefault();
-    window.data.sendForm(new FormData(adForm), window.success.onSuccess, window.error.onFormError);
+    window.data.sendForm(new FormData(adForm), onSuccess, onError);
   });
+
+  var onSuccess = function () {
+    window.success.show();
+    window.main.deactivatePage();
+  };
+
+  var onError = function (error) {
+    window.error.show(error);
+    // window.main.deactivatePage(); ?
+  };
 
 
   var clearButton = adForm.querySelector('.ad-form__reset');
@@ -125,10 +135,8 @@
   };
 
   window.form = {
-    disableForm: disableForm,
-    enableForm: enableForm,
-    switchMinPrice: switchMinPrice,
+    disable: disableForm,
+    enable: enableForm,
     setAddress: setAddress,
-    formReset: formReset,
   };
 })();

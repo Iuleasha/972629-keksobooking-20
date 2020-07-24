@@ -43,7 +43,7 @@
         return;
       }
 
-      var mapClientRect = window.pin.mapPinsWrapper.getBoundingClientRect();
+      var mapClientRect = window.pin.mapWrapper.getBoundingClientRect();
       var shift = {
         x: startCoords.x - moveEvt.clientX,
         y: startCoords.y - moveEvt.clientY,
