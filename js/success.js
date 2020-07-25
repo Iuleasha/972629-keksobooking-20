@@ -1,37 +1,36 @@
 'use strict';
 
 (function () {
+  var onSuccessTemplate = document.querySelector('#success').content.querySelector('.success');
+  var mainWrapper = document.querySelector('main');
 
   var onSuccess = function () {
-    var onSuccessTemplate = document.querySelector('#success');
-    var onSuccessCreate = onSuccessTemplate.content.querySelector('.success').cloneNode(true);
+    var success = onSuccessTemplate.cloneNode(true);
 
-    var fragment = document.createDocumentFragment();
+    mainWrapper.appendChild(success);
 
-    fragment.appendChild(onSuccessCreate);
-    window.error.mainWrapper.appendChild(fragment);
-
-    var successWrapper = window.error.mainWrapper.querySelector('.success');
-    var removeSuccessPopup = function () {
-      successWrapper.removeEventListener('click', removeSuccessPopup);
-      document.removeEventListener('keydown', onEscPress);
-      window.error.mainWrapper.querySelector('.success').remove();
-    };
-
-    var onEscPress = function (evt) {
-      if (evt.key === 'Escape') {
-        removeSuccessPopup();
-      }
-    };
-
-    successWrapper.addEventListener('click', removeSuccessPopup);
+    success.addEventListener('click', function () {
+      close();
+    });
     document.addEventListener('keydown', onEscPress);
-    window.main.deactivatePage();
-    window.form.formReset();
-    window.pin.clearPins();
-  };
-  window.success = {
-    onSuccess: onSuccess,
   };
 
+  var onEscPress = function (evt) {
+    if (evt.key === 'Escape') {
+      close();
+    }
+  };
+
+  var close = function () {
+    var element = mainWrapper.querySelector('.success');
+
+    if (element) {
+      element.remove();
+      document.removeEventListener('keydown', onEscPress);
+    }
+  };
+
+  window.success = {
+    show: onSuccess,
+  };
 })();

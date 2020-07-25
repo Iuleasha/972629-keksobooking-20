@@ -1,54 +1,37 @@
 'use strict';
 
 (function () {
-  var errorTemplate = document.querySelector('#error');
+  var errorTemplate = document.querySelector('#error').content.querySelector('.error');
   var mainWrapper = document.querySelector('main');
 
-  var getCloneNode = function () {
-    return errorTemplate.content.querySelector('.error').cloneNode(true);
-  };
+  var open = function (errorMessage) {
+    var error = errorTemplate.cloneNode(true);
+    error.querySelector('.error__message').textContent = errorMessage;
 
-  var onFormError = function () {
+    mainWrapper.appendChild(error);
+    error.addEventListener('click', function () {
+      close();
+    });
+    document.addEventListener('keydown', onEscPress);
     window.main.deactivatePage();
-    mainWrapper.appendChild(getCloneNode());
-    closeErrorPopUp();
   };
 
-  var onError = function (errorMessage) {
-    var errorCloneNode = getCloneNode();
-    var errorMessageWrapper = errorCloneNode.querySelector('.error__message');
+  var close = function () {
+    var error = mainWrapper.querySelector('.error');
 
-    errorMessageWrapper.textContent = errorMessage;
-
-    window.main.deactivatePage();
-    mainWrapper.appendChild(errorCloneNode);
-    closeErrorPopUp();
+    if (error) {
+      error.remove();
+      document.removeEventListener('keydown', onEscPress);
+    }
   };
 
-  var closeErrorPopUp = function () {
-    var errorWrapper = mainWrapper.querySelector('.error');
-
-    if (errorWrapper) {
-      var removeErrorPopup = function () {
-        mainWrapper.querySelector('.error').remove();
-        errorWrapper.removeEventListener('click', removeErrorPopup);
-        document.removeEventListener('keydown', onEscPress);
-      };
-
-      var onEscPress = function (evt) {
-        if (evt.key === 'Escape') {
-          removeErrorPopup();
-        }
-      };
-
-      errorWrapper.addEventListener('click', removeErrorPopup);
-      document.addEventListener('keydown', onEscPress);
+  var onEscPress = function (evt) {
+    if (evt.key === 'Escape') {
+      close();
     }
   };
 
   window.error = {
-    mainWrapper: mainWrapper,
-    onError: onError,
-    onFormError: onFormError,
+    show: open,
   };
 })();

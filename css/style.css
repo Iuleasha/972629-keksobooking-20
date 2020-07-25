@@ -204,7 +204,9 @@ fieldset {
 .map__pin--main {
   width: 65px;
   height: 65px;
-
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, 25%);
   cursor: move;
 }
 

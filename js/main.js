@@ -1,25 +1,45 @@
 'use strict';
 
 (function () {
+  var isActive = false;
+
   var deactivatePage = function () {
-    window.map.isActive = false;
-    window.filter.disableFilter();
-    window.form.disableForm();
-    window.mainPin.setMainPinCoordinates();
-    window.card.map.classList.add('map--faded');
-    window.pin.clearPins();
+    isActive = false;
+    window.map.disable();
+    window.form.disable();
+    window.form.updateAddress();
   };
 
   var activatePage = function () {
-    window.filter.enableFilter();
-    window.form.enableForm();
-    window.mainPin.setMainPinCoordinates();
+    if (isActive) {
+      return;
+    }
+
+    isActive = true;
+
+    window.map.enable();
+    window.form.enable();
+    window.form.updateAddress();
+    window.data.loadData(onSuccess, onError);
   };
 
-  deactivatePage();
+  var onSuccess = function (data) {
+    window.map.setData(data);
+  };
+
+  var onError = function (errorMessage) {
+    window.error.show(errorMessage);
+  };
+
+  var getIsActive = function () {
+    return isActive;
+  };
 
   window.main = {
+    isActive: getIsActive,
     activatePage: activatePage,
     deactivatePage: deactivatePage,
   };
+
+  deactivatePage();
 })();
