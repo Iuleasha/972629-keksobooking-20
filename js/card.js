@@ -7,11 +7,10 @@
     house: 'Дом',
     palace: 'Дворец',
   };
-  var cardTemplate = document.querySelector('#card');
-  var mapFiltersContainer = document.querySelector('.map__filters-container');
+  var cardTemplate = document.querySelector('#card').content.querySelector('.map__card');
 
   var createCardPopup = function (card) {
-    var mapCard = cardTemplate.content.querySelector('.map__card').cloneNode(true);
+    var mapCard = cardTemplate.cloneNode(true);
 
     if (card.offer.title) {
       mapCard.querySelector('.popup__title').textContent = card.offer.title;
@@ -71,48 +70,17 @@
     var fragmet = document.createDocumentFragment();
 
     photos.forEach(function (item) {
-      var imageTemplate = cardTemplate.content.querySelector('.popup__photo').cloneNode();
+      var imageTemplate = cardTemplate.querySelector('.popup__photo').cloneNode();
 
       imageTemplate.src = item;
+
       fragmet.appendChild(imageTemplate);
     });
 
     return fragmet;
   };
 
-  var closeCardPopUp = function () {
-    var card = window.card.map.querySelector('.map__card');
-
-    if (card) {
-      card.remove();
-
-      document.removeEventListener('keydown', onEscPress);
-    }
-  };
-
-  var onEscPress = function (evt) {
-    if (evt.key === 'Escape') {
-      closeCardPopUp();
-    }
-  };
-
-  var openCardPopUp = function (cardInfo) {
-    closeCardPopUp();
-
-    var newCard = createCardPopup(cardInfo);
-
-    newCard.querySelector('.popup__close').addEventListener('click', function () {
-      closeCardPopUp();
-    });
-
-    window.card.map.insertBefore(newCard, mapFiltersContainer);
-
-    document.addEventListener('keydown', onEscPress);
-  };
-
   window.card = {
-    map: document.querySelector('.map'),
-    open: openCardPopUp,
-    close: closeCardPopUp,
+    create: createCardPopup,
   };
 })();

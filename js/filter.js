@@ -11,25 +11,23 @@
   var housingGuestsSelect = mapFiltersWrapper.querySelector('#housing-guests');
 
   var enableFilter = function () {
-    mapFiltersWrapper.addEventListener('change', filterOffersDebounce);
-
+    mapFiltersWrapper.addEventListener('change', onFormChangeDebounce);
     mapFiltersWrapper.querySelector('fieldset').removeAttribute('disabled');
     window.utils.removeDisableStatus(allSelects);
   };
 
   var disableFilter = function () {
-    mapFiltersWrapper.removeEventListener('change', filterOffersDebounce);
-
-    resetFilter();
+    mapFiltersWrapper.removeEventListener('change', onFormChangeDebounce);
+    mapFiltersWrapper.reset();
     mapFiltersWrapper.querySelector('fieldset').setAttribute('disabled', true);
     window.utils.addDisableStatus(allSelects);
   };
 
-  var resetFilter = function () {
-    mapFiltersWrapper.reset();
-  };
+  var onFormChangeDebounce = window.utils.debounce(function () {
+    window.map.updatePins();
+  });
 
-  var filterOffers = function () {
+  var filterOffers = function (data) {
     var housingTypeValue = housingTypeSelect.value;
     var housingPriceValue = housingPriceSelect.value;
     var housingRoomsValue = housingRoomsSelect.value;
@@ -40,20 +38,14 @@
       return checkbox.value;
     });
 
-    var filteredData = window.pin.data.filter(function (item) {
+    return data.filter(function (item) {
       return compareSelectValue(item.offer.type, housingTypeValue) &&
         compareValueByPrice(item.offer.price, housingPriceValue) &&
         compareSelectValue(String(item.offer.rooms), housingRoomsValue) &&
         compareSelectValue(String(item.offer.guests), housingGuestsValue) &&
         (checkedFeatures.length === 0 || filterOffersByFeatures(checkedFeatures, item.offer.features));
     });
-
-    window.card.close();
-    window.pin.clear();
-    window.pin.setToMap(filteredData);
   };
-
-  var filterOffersDebounce = window.utils.debounce(filterOffers);
 
   var compareSelectValue = function (itemValue, selectValue) {
     return selectValue === 'any' || itemValue === selectValue;
@@ -79,6 +71,7 @@
   };
 
   window.filter = {
+    apply: filterOffers,
     disable: disableFilter,
     enable: enableFilter,
   };

@@ -79,9 +79,11 @@
       priceInput.setAttribute('placeholder', '10000');
     }
   };
-  var setAddress = function (value) {
-    address.value = value;
+
+  var updateAddress = function () {
+    address.value = window.mainPin.getCoordinates();
   };
+
   var addRoomCapacityValidation = function () {
     var capacityNumber = Number(capacitySelect.value);
 
@@ -124,9 +126,7 @@
 
   var onError = function (error) {
     window.error.show(error);
-    // window.main.deactivatePage(); ?
   };
-
 
   var clearButton = adForm.querySelector('.ad-form__reset');
 
@@ -137,6 +137,6 @@
   window.form = {
     disable: disableForm,
     enable: enableForm,
-    setAddress: setAddress,
+    updateAddress: updateAddress,
   };
 })();

@@ -1,8 +1,6 @@
 'use strict';
 
 (function () {
-  var mapPinsWrapper = document.querySelector('.map__pins');
-
   var createPin = function (pinInfo) {
     var pinTemplate = document.querySelector('#pin');
     var pin = pinTemplate.content.querySelector('.map__pin').cloneNode(true);
@@ -16,45 +14,27 @@
     pinImg.alt = pinInfo.offer.title;
 
     pin.addEventListener('click', function () {
-      window.card.open(pinInfo);
+      removeActiveClass();
+      pin.classList.add('map__pin--active');
+      window.map.openCard(pinInfo);
     });
 
     return pin;
   };
 
-  var setPinData = function (data) {
-    var filteredData = data.filter(function (item) {
-      return item.hasOwnProperty('offer');
-    });
 
-    window.pin.data = filteredData;
+  var removeActiveClass = function () {
+    var activePin = document.querySelector('.map__pin--active');
 
-    setPinsToMap(filteredData);
-  };
+    if (!activePin) {
+      return;
+    }
 
-  var setPinsToMap = function (data) {
-    var fragment = document.createDocumentFragment();
-
-    data.forEach(function (item) {
-      fragment.appendChild(createPin(item));
-    });
-
-    mapPinsWrapper.appendChild(fragment);
-  };
-
-  var clearPins = function () {
-    var pins = mapPinsWrapper.querySelectorAll('.map__pin:not(.map__pin--main)');
-
-    pins.forEach(function (element) {
-      element.remove();
-    });
+    activePin.classList.remove('map__pin--active');
   };
 
   window.pin = {
-    setData: setPinData,
-    setToMap: setPinsToMap,
-    mapWrapper: mapPinsWrapper,
-    clear: clearPins,
-    data: [],
+    create: createPin,
+    removeActiveClass: removeActiveClass,
   };
 })();
