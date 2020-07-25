@@ -1,16 +1,17 @@
 'use strict';
 
 (function () {
+  var MIN_MAP_HEIGHT = 130;
+  var MAX_MAP_HEIGHT = 630;
   var mapPinMain = document.querySelector('.map__pin--main');
   var mapWrapper = document.querySelector('.map__pins');
   var mainPinWidth = mapPinMain.offsetWidth;
   var mainPinHeight = mapPinMain.offsetHeight;
-  var MIN_MAP_HEIGHT = 130;
-  var MAX_MAP_HEIGHT = 630;
 
   var getCoordinates = function () {
     var x = Math.round(mapPinMain.offsetLeft + mainPinWidth / 2);
     var y = (window.main.isActive()) ? Math.round(mapPinMain.offsetTop + mainPinHeight) : Math.round(mapPinMain.offsetLeft + mainPinWidth / 2);
+
     return x + ', ' + y;
   };
 

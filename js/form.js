@@ -1,6 +1,19 @@
 'use strict';
 
 (function () {
+  var EMPTY_CAPACITY = 0;
+  var housingMinPrice = {
+    bungalo: '0',
+    flat: '1000',
+    house: '5000',
+    palace: '10000',
+  };
+  var roomMaxCapacity = {
+    '1': {maxCapacity: 1, errorMessage: '«для 1 гостя»'},
+    '2': {maxCapacity: 2, errorMessage: '«для 2 гостей» или «для 1 гостя»'},
+    '3': {maxCapacity: 3, errorMessage: '«для 3 гостей», «для 2 гостей» или «для 1 гостя»'},
+    '100': {maxCapacity: 0, errorMessage: '«не для гостей»'},
+  };
   var roomNumberSelect = document.querySelector('#room_number');
   var capacitySelect = document.querySelector('#capacity');
   var priceInput = document.querySelector('#price');
@@ -11,9 +24,13 @@
   var adForm = document.querySelector('.ad-form');
   var avatar = document.querySelector('#avatar');
   var images = document.querySelector('#images');
+  var avatarPreview = adForm.querySelector('.ad-form-header__preview img');
+  var defaultAvatar = avatarPreview.src;
+  var imagesPreview = adForm.querySelector('.ad-form__photo');
+  var fieldsets = adForm.querySelectorAll('fieldset');
 
   var getAdFormFieldsets = function () {
-    return adForm.querySelectorAll('fieldset');
+    return fieldsets;
   };
 
   var disableForm = function () {
@@ -23,6 +40,8 @@
     clearButton.removeEventListener('click', formReset);
     window.utils.addDisableStatus(getAdFormFieldsets());
     adForm.reset();
+    resetAvatar();
+    resetImages();
   };
 
   var enableForm = function () {
@@ -34,22 +53,27 @@
   };
 
   var uploadAvatar = function () {
-    var preview = adForm.querySelector('.ad-form-header__preview img');
+    loadFile(avatar, avatarPreview);
+  };
 
-    loadFile(avatar, preview);
+  var resetAvatar = function () {
+    avatarPreview.src = defaultAvatar;
   };
 
   var uploadImages = function () {
-    var preview = adForm.querySelector('.ad-form__photo');
-    var img = preview.querySelector('img');
+    var img = imagesPreview.querySelector('img');
 
     if (img) {
       loadFile(images, img);
     } else {
       img = document.createElement('img');
       loadFile(images, img);
-      preview.appendChild(img);
+      imagesPreview.appendChild(img);
     }
+  };
+
+  var resetImages = function () {
+    imagesPreview.innerHTML = '';
   };
 
   var loadFile = function (fileChooser, preview) {
@@ -64,20 +88,10 @@
   };
 
   var switchMinPrice = function () {
-    var typeSelectValue = typeSelect.value;
-    if (typeSelectValue === 'bungalo') {
-      priceInput.setAttribute('min', '0');
-      priceInput.setAttribute('placeholder', '0');
-    } else if (typeSelectValue === 'flat') {
-      priceInput.setAttribute('min', '1000');
-      priceInput.setAttribute('placeholder', '1000');
-    } else if (typeSelectValue === 'house') {
-      priceInput.setAttribute('min', '5000');
-      priceInput.setAttribute('placeholder', '5000');
-    } else if (typeSelectValue === 'palace') {
-      priceInput.setAttribute('min', '10000');
-      priceInput.setAttribute('placeholder', '10000');
-    }
+    var minPrice = housingMinPrice[typeSelect.value];
+
+    priceInput.setAttribute('min', minPrice);
+    priceInput.setAttribute('placeholder', minPrice);
   };
 
   var updateAddress = function () {
@@ -86,15 +100,11 @@
 
   var addRoomCapacityValidation = function () {
     var capacityNumber = Number(capacitySelect.value);
+    var room = roomMaxCapacity[roomNumberSelect.value];
 
-    if (roomNumberSelect.value === '1' && (capacityNumber === 0 || capacityNumber > 1)) {
-      capacitySelect.setCustomValidity('для 1 гостя');
-    } else if (roomNumberSelect.value === '2' && (capacityNumber === 0 || capacityNumber > 2)) {
-      capacitySelect.setCustomValidity('«для 2 гостей» или «для 1 гостя»');
-    } else if (roomNumberSelect.value === '3' && (capacityNumber === 0 || capacityNumber > 3)) {
-      capacitySelect.setCustomValidity('«для 3 гостей», «для 2 гостей» или «для 1 гостя»');
-    } else if (roomNumberSelect.value === '100' && capacityNumber > 0) {
-      capacitySelect.setCustomValidity('«не для гостей»');
+    if (capacityNumber > room.maxCapacity ||
+      capacityNumber === EMPTY_CAPACITY && room.maxCapacity !== EMPTY_CAPACITY) {
+      capacitySelect.setCustomValidity(room.errorMessage);
     } else {
       capacitySelect.setCustomValidity('');
     }

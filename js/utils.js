@@ -4,15 +4,17 @@
   var DEBOUNCE_INTERVAL = 500;
 
   var addDisableStatus = function (array) {
-    for (var i = 0; i < array.length; i++) {
-      array[i].setAttribute('disabled', true);
-    }
+    array.forEach(function (item) {
+      item.setAttribute('disabled', true);
+    });
   };
+
   var removeDisableStatus = function (array) {
-    for (var i = 0; i < array.length; i++) {
-      array[i].removeAttribute('disabled');
-    }
+    array.forEach(function (item) {
+      item.removeAttribute('disabled');
+    });
   };
+
   var debounce = function (cb) {
     var lastTimeout = null;
 

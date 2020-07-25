@@ -1,9 +1,11 @@
 'use strict';
 
 (function () {
+  var pinTemplate = document.querySelector('#pin');
+  var pinWrapper = pinTemplate.content.querySelector('.map__pin');
+
   var createPin = function (pinInfo) {
-    var pinTemplate = document.querySelector('#pin');
-    var pin = pinTemplate.content.querySelector('.map__pin').cloneNode(true);
+    var pin = pinWrapper.cloneNode(true);
 
     pin.style.left = pinInfo.location.x - pin.offsetWidth / 2 + 'px';
     pin.style.top = pinInfo.location.y - pin.offsetHeight + 'px';
@@ -21,7 +23,6 @@
 
     return pin;
   };
-
 
   var removeActiveClass = function () {
     var activePin = document.querySelector('.map__pin--active');
